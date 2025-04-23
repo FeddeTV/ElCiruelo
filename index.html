@@ -1,0 +1,467 @@
+import React, { useState, useEffect } from 'react';
+import { Home, LogIn, UserPlus, Trophy, GraduationCap, Users } from 'lucide-react'; // Icons for navigation
+
+// Mock Data (Replace with API calls later)
+const mockResults = [
+  { p1: 'Garcia', score: '6-3, 6-2', p2: 'Martinez' },
+  { p1: 'Lopez', score: '7-5, 6-7, 7-6', p2: 'Fernandez' },
+  { p1: 'Perez', score: '6-0, 6-1', p2: 'Gomez' },
+  { p1: 'Sanchez', score: '4-6, 6-4, 6-3', p2: 'Diaz' },
+  { p1: 'Romero', score: '6-2, 6-4', p2: 'Alvarez' },
+  { p1: 'Torres', score: '7-6, 6-3', p2: 'Ruiz' },
+  { p1: 'Flores', score: '6-1, 6-0', p2: 'Vargas' },
+  { p1: 'Acosta', score: '6-4, 3-6, 7-5', p2: 'Benitez' },
+  { p1: 'Medina', score: '6-3, 6-3', p2: 'Suarez' },
+  { p1: 'Herrera', score: '7-5, 7-5', p2: 'Aguirre' },
+];
+
+const mockInterclubImages = [
+  'https://placehold.co/800x300/562d69/ffffff?text=Partido+Interclub+1',
+  'https://placehold.co/800x300/00561e/ffffff?text=Equipo+Ciruelo',
+  'https://placehold.co/800x300/562d69/ffffff?text=Celebracion',
+  'https://placehold.co/800x300/00561e/ffffff?text=Entrenamiento',
+  // Add up to 10 images
+];
+
+// Helper function for WhatsApp link
+const openWhatsApp = () => {
+  window.open('https://wa.me/5492215469412', '_blank');
+};
+
+// --- Components ---
+
+// Simple Carousel Component (Basic Implementation)
+const Carousel = ({ items, renderItem, interval = 3000, className = '' }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (items.length <= 1) return; // No need to slide if 1 or 0 items
+
+    const timer = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % items.length);
+    }, interval);
+
+    return () => clearInterval(timer); // Cleanup interval on component unmount
+  }, [items.length, interval]);
+
+  if (!items || items.length === 0) {
+    return <div className={`text-center p-4 ${className}`}>No hay elementos para mostrar.</div>;
+  }
+
+  return (
+    <div className={`overflow-hidden relative ${className}`}>
+      <div
+        className="flex transition-transform duration-500 ease-in-out"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {items.map((item, index) => (
+          <div key={index} className="w-full flex-shrink-0">
+            {renderItem(item)}
+          </div>
+        ))}
+      </div>
+       {/* Optional: Add indicators or controls here */}
+    </div>
+  );
+};
+
+// Navigation Item Component
+const NavItem = ({ icon: Icon, label, active, onClick }) => (
+  <li
+    className={`flex items-center p-3 my-1 rounded-lg cursor-pointer transition-colors duration-200 ${
+      active
+        ? 'bg-[#00561e] text-white' // Active state color (detalle)
+        : 'text-gray-200 hover:bg-[#6a3a80] hover:text-white' // Hover effect slightly darker than primary
+    }`}
+    onClick={onClick}
+  >
+    <Icon className="mr-3 h-5 w-5" />
+    <span>{label}</span>
+  </li>
+);
+
+// --- Page Components ---
+
+const HomePage = () => (
+  <div>
+    {/* Header Image */}
+    <div className="w-full h-[250px] md:h-[400px] bg-[#562d69] mb-6 rounded-lg overflow-hidden">
+       {/* Placeholder for header image - replace src and alt */}
+      <img
+         src="https://placehold.co/1200x400/562d69/ffffff?text=Flyer+Torneo+Actual+o+Inscripciones"
+         alt="Flyer del torneo o información de inscripción"
+         className="w-full h-full object-cover"
+         onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/1200x400/cccccc/ffffff?text=Imagen+no+disponible'; }}
+       />
+    </div>
+
+    {/* Results Carousel */}
+    <h2 className="text-2xl font-semibold mb-4 text-[#562d69]">Últimos Resultados</h2>
+     <div className="bg-white p-4 rounded-lg shadow">
+       <Carousel
+         items={mockResults}
+         renderItem={(result) => (
+           <div className="text-center p-2 text-black">
+             <span className="font-medium">{result.p1}</span>
+             <span className="mx-2 text-sm text-gray-600">vs</span>
+             <span className="font-medium">{result.p2}</span>
+             <span className="block text-lg font-bold text-[#00561e]">{result.score}</span>
+           </div>
+         )}
+         interval={4000} // Adjust speed as needed
+         className="h-24" // Adjust height as needed
+       />
+     </div>
+  </div>
+);
+
+const LoginPage = () => (
+  <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-lg">
+    <h2 className="text-3xl font-bold mb-6 text-center text-[#562d69]">Iniciar Sesión</h2>
+    {/* TODO: Implement Login Form */}
+    <form>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+          Correo Electrónico
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#562d69]"
+          id="email"
+          type="email"
+          placeholder="tu@email.com"
+          required
+        />
+         {/* Placeholder for admin login info */}
+         <p className="text-xs text-gray-500 mt-1">Admin: fedee.9lp@gmail.com</p>
+      </div>
+      <div className="mb-6">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+          Contraseña
+        </label>
+        <input
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-[#562d69]"
+          id="password"
+          type="password"
+          placeholder="******************"
+          required
+        />
+      </div>
+      <div className="flex items-center justify-between">
+        <button
+          className="bg-[#562d69] hover:bg-[#452354] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-200"
+          type="button" // Change to type="submit" when form handling is added
+        >
+          Ingresar
+        </button>
+        {/* Optional: Add forgot password link */}
+      </div>
+    </form>
+  </div>
+);
+
+const RegisterPage = () => {
+    const [dob, setDob] = useState('');
+    const [age, setAge] = useState(null);
+
+    const calculateAge = (birthDate) => {
+        if (!birthDate) return null;
+        try {
+            const today = new Date();
+            const birthDateObj = new Date(birthDate);
+            let calculatedAge = today.getFullYear() - birthDateObj.getFullYear();
+            const m = today.getMonth() - birthDateObj.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDateObj.getDate())) {
+                calculatedAge--;
+            }
+            return calculatedAge >= 0 ? calculatedAge : null; // Ensure age is not negative
+        } catch (e) {
+            console.error("Error calculating age:", e);
+            return null;
+        }
+    };
+
+
+    const handleDobChange = (e) => {
+        const newDob = e.target.value;
+        setDob(newDob);
+        setAge(calculateAge(newDob));
+    };
+
+   return (
+      <div className="max-w-lg mx-auto mt-10 p-8 bg-white rounded-lg shadow-lg">
+        <h2 className="text-3xl font-bold mb-6 text-center text-[#562d69]">Registrarte</h2>
+        {/* TODO: Implement Registration Form Logic */}
+        <form>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
+                Nombre
+              </label>
+              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#562d69]" id="firstName" type="text" placeholder="Juan" required />
+            </div>
+            <div>
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
+                Apellido
+              </label>
+              <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#562d69]" id="lastName" type="text" placeholder="Perez" required />
+            </div>
+          </div>
+           <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dob">
+                    Fecha de Nacimiento
+                </label>
+                <input
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#562d69]"
+                    id="dob"
+                    type="date"
+                    value={dob}
+                    onChange={handleDobChange}
+                    required
+                />
+                {age !== null && (
+                    <p className="text-sm text-gray-600 mt-1">Edad: {age} años</p>
+                )}
+            </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="regEmail">
+              Correo Electrónico
+            </label>
+            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#562d69]" id="regEmail" type="email" placeholder="tu@email.com" required />
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="regPassword">
+              Contraseña
+            </label>
+            <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-[#562d69]" id="regPassword" type="password" placeholder="******************" required />
+          </div>
+           {/* TODO: Add password confirmation field */}
+          <div className="flex items-center justify-center">
+            <button
+              className="bg-[#562d69] hover:bg-[#452354] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-200"
+              type="button" // Change to type="submit" when form handling is added
+            >
+              Crear Cuenta
+            </button>
+          </div>
+        </form>
+      </div>
+   );
+};
+
+
+const TournamentBracketsPage = () => (
+  <div>
+    <h2 className="text-3xl font-bold mb-6 text-[#562d69]">Cuadros de Torneos</h2>
+
+    {/* Placeholder for Tournament Selection/Tabs (e.g., Torneo Apertura, Torneo Clausura) */}
+    <div className="mb-6">
+        <p className="text-gray-600 italic">Selecciona un torneo para ver los cuadros.</p>
+        {/* TODO: Add tournament selection dropdown or tabs */}
+    </div>
+
+    {/* Placeholder for Brackets Display */}
+    <div className="space-y-8">
+      {['A', 'B', 'C'].map((category) => (
+        <div key={category} className="bg-white p-6 rounded-lg shadow">
+          <h3 className="text-2xl font-semibold mb-4 text-[#00561e]">Categoría {category}</h3>
+          <p className="text-gray-700 mb-2">Coordinador: [Nombre Coordinador]</p>
+          {/* TODO: Implement actual bracket visualization (could be complex) */}
+          <div className="border border-dashed border-gray-300 p-10 text-center text-gray-500 rounded">
+            [Aquí se mostrará el cuadro del torneo para la Categoría {category}]
+            <p className="mt-2 text-sm">Horarios y lugares de partidos aparecerán aquí.</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* Match Rules */}
+    <div className="mt-10 pt-6 border-t border-gray-300">
+      <h3 className="text-xl font-semibold mb-3 text-[#562d69]">Reglas de los Partidos</h3>
+      <ul className="list-disc list-inside text-black space-y-1 text-sm">
+        <li>Los partidos se juegan al mejor de 3 sets sin ventajas. En caso de 40-40, se juega un punto decisivo (punto de oro).</li>
+        <li>Cada set se juega hasta 6 games, con diferencia de 2 (ej. 6-4, 7-5). Si se llega a 6-6, se juega un tie-break a 7 puntos.</li>
+        <li>Si ambos jugadores/parejas ganan un set, el tercer set será un súper tie-break a 10 puntos (con diferencia de 2).</li>
+        {/* Note: Adjusted rule 3 based on common practice, original request was slightly ambiguous. Confirm if 7 or 10 points needed for 3rd set tie-break */}
+      </ul>
+    </div>
+  </div>
+);
+
+const ClassesPage = () => (
+  <div>
+    <h2 className="text-3xl font-bold mb-8 text-[#562d69]">Clases de Tenis</h2>
+
+    <div className="space-y-8">
+      {/* Escuela de Tenis (Niños/Jóvenes) */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h3 className="text-2xl font-semibold mb-4 text-[#00561e]">Escuela de Tenis (Niños y Jóvenes)</h3>
+        {/* TODO: Fetch and display actual class info */}
+        <p className="text-gray-700 mb-2"><strong>Horarios:</strong> [Insertar Horarios aquí - ej. Lunes y Miércoles 17:00 - 18:00]</p>
+        <p className="text-gray-700 mb-2"><strong>Grupos:</strong> [Insertar descripción de grupos - ej. Principiantes, Intermedios, Avanzados]</p>
+        <p className="text-gray-700 mb-4"><strong>Valores:</strong> [Insertar Valores/Precios aquí - ej. $XXXX por mes]</p>
+        <button
+          onClick={openWhatsApp}
+          className="bg-[#00561e] hover:bg-[#004418] text-white font-bold py-2 px-4 rounded transition-colors duration-200 inline-flex items-center"
+        >
+          Consultar Disponibilidad
+        </button>
+      </div>
+
+      {/* Clases Grupales Adultos */}
+       <div className="bg-white p-6 rounded-lg shadow">
+         <h3 className="text-2xl font-semibold mb-4 text-[#00561e]">Clases Grupales (Adultos)</h3>
+         {/* TODO: Fetch and display actual class info */}
+         <p className="text-gray-700 mb-2"><strong>Horarios:</strong> [Insertar Horarios - ej. Martes y Jueves 19:00 - 20:00]</p>
+         <p className="text-gray-700 mb-2"><strong>Niveles:</strong> [Insertar descripción de niveles]</p>
+         <p className="text-gray-700 mb-4"><strong>Valores:</strong> [Insertar Valores/Precios]</p>
+         <button
+           onClick={openWhatsApp}
+           className="bg-[#00561e] hover:bg-[#004418] text-white font-bold py-2 px-4 rounded transition-colors duration-200 inline-flex items-center"
+         >
+           Consultar Disponibilidad
+         </button>
+       </div>
+
+      {/* Escuela Adultos */}
+       <div className="bg-white p-6 rounded-lg shadow">
+         <h3 className="text-2xl font-semibold mb-4 text-[#00561e]">Escuela de Adultos</h3>
+         {/* TODO: Fetch and display actual class info */}
+         <p className="text-gray-700 mb-2"><strong>Horarios:</strong> [Insertar Horarios]</p>
+         <p className="text-gray-700 mb-2"><strong>Enfoque:</strong> [Insertar descripción - ej. Técnica, Táctica, Juego]</p>
+         <p className="text-gray-700 mb-4"><strong>Valores:</strong> [Insertar Valores/Precios]</p>
+         <button
+           onClick={openWhatsApp}
+           className="bg-[#00561e] hover:bg-[#004418] text-white font-bold py-2 px-4 rounded transition-colors duration-200 inline-flex items-center"
+         >
+           Consultar Disponibilidad
+         </button>
+       </div>
+    </div>
+     {/* TODO: Add Admin section to modify class details if logged in as admin */}
+  </div>
+);
+
+const InterclubPage = () => (
+  <div>
+    <h2 className="text-3xl font-bold mb-6 text-[#562d69]">Interclubes</h2>
+
+    {/* Image Carousel */}
+    <div className="mb-8">
+       <Carousel
+         items={mockInterclubImages}
+         renderItem={(imageUrl) => (
+           <img
+             src={imageUrl}
+             alt="Imagen Interclub"
+             className="w-full h-[300px] object-cover rounded-lg"
+             onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/800x300/cccccc/ffffff?text=Imagen+no+disponible'; }}
+           />
+         )}
+         interval={5000}
+         className="rounded-lg overflow-hidden shadow-md"
+       />
+       {/* TODO: Add Admin functionality to upload/manage images */}
+    </div>
+
+    {/* Upcoming Matches */}
+    <div className="bg-white p-6 rounded-lg shadow mb-8">
+        <h3 className="text-2xl font-semibold mb-4 text-[#00561e]">Próximos Encuentros</h3>
+        {/* TODO: Fetch and display upcoming matches from backend */}
+        <div className="space-y-4">
+            {/* Example Match Entry */}
+            <div className="border-b pb-3">
+                <p><strong>Fecha:</strong> [Fecha del Partido] - <strong>Hora:</strong> [Hora]</p>
+                <p><strong>Lugar:</strong> [Lugar del Encuentro]</p>
+                <p><strong>Rival:</strong> Club [Nombre Club Adversario]</p>
+                <p><strong>Categorías:</strong> [Lista de Categorías - ej. 1ra A, 2da B, 3ra]</p>
+            </div>
+             <div className="border-b pb-3">
+                <p><strong>Fecha:</strong> [Otra Fecha] - <strong>Hora:</strong> [Otra Hora]</p>
+                <p><strong>Lugar:</strong> [Otro Lugar]</p>
+                <p><strong>Rival:</strong> Club [Otro Club]</p>
+                <p><strong>Categorías:</strong> [Otras Categorías]</p>
+            </div>
+            <p className="text-gray-500 italic pt-2">Información actualizada por el administrador.</p>
+        </div>
+         {/* TODO: Add Admin section to add/edit match details */}
+    </div>
+
+     {/* Information Section */}
+      <div className="bg-white p-6 rounded-lg shadow">
+        <h3 className="text-2xl font-semibold mb-4 text-[#00561e]">Información General</h3>
+         {/* TODO: Add section for general interclub info managed by admin */}
+         <p className="text-gray-700">
+            Aquí el administrador puede publicar información relevante sobre los equipos de interclubes,
+            resultados pasados, o noticias generales sobre la participación del club.
+         </p>
+      </div>
+  </div>
+);
+
+// --- Main App Component ---
+
+function App() {
+  const [activePage, setActivePage] = useState('Inicio'); // Default page
+
+  // Function to render the active page component
+  const renderPage = () => {
+    switch (activePage) {
+      case 'Inicio':
+        return <HomePage />;
+      case 'Iniciar sesión':
+        return <LoginPage />;
+      case 'Registrarte':
+        return <RegisterPage />;
+      case 'Cuadro de torneos':
+        return <TournamentBracketsPage />;
+      case 'Clases':
+        return <ClassesPage />;
+      case 'Interclubes':
+        return <InterclubPage />;
+      // TODO: Add Player Dashboard and Admin Panel pages later
+      default:
+        return <HomePage />;
+    }
+  };
+
+  // Navigation items configuration
+  const navItems = [
+    { label: 'Inicio', icon: Home },
+    { label: 'Iniciar sesión', icon: LogIn },
+    { label: 'Registrarte', icon: UserPlus },
+    { label: 'Cuadro de torneos', icon: Trophy },
+    { label: 'Clases', icon: GraduationCap },
+    { label: 'Interclubes', icon: Users },
+    // Add more items here later (e.g., 'Mi Perfil', 'Admin Panel')
+  ];
+
+  return (
+    <div className="flex min-h-screen bg-gray-100 font-sans"> {/* Using Inter font via Tailwind default */}
+      {/* Left Navigation Panel */}
+      <nav className="w-64 bg-[#562d69] text-white p-4 flex flex-col fixed h-full shadow-lg"> {/* Primary color */}
+        <div className="text-2xl font-bold mb-8 text-center border-b border-gray-500 pb-4">
+          Club El Ciruelo
+        </div>
+        <ul>
+          {navItems.map((item) => (
+            <NavItem
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              active={activePage === item.label}
+              onClick={() => setActivePage(item.label)}
+            />
+          ))}
+        </ul>
+         {/* Optional: Add Log out button or User profile link at the bottom */}
+      </nav>
+
+      {/* Main Content Area */}
+      <main className="flex-1 ml-64 p-6 md:p-10"> {/* Add margin-left to offset fixed nav */}
+        {renderPage()}
+      </main>
+    </div>
+  );
+}
+
+export default App;
